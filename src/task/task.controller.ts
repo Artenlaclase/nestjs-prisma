@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, BadRequestException } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
@@ -21,7 +21,9 @@ export class TaskController {
 
   @Get(':id')
   async getTaskById(@Param('id') id: string) {
-    return this.taskService.getTaskById(Number(id));
+    const taskFound =  await this.taskService.getTaskById(Number(id))
+    if (!taskFound) throw new BadRequestException('Task not found')
+    return taskFound;
   }
 
   @Put(':id')
